@@ -20,12 +20,38 @@ local options = {
     }
 }
 
+-- taken from https://github.com/ibhagwan/fzf-lua/blob/main/lua/fzf-lua/utils.lua
+-- MIT license
+function get_visual_selection()
+    local _, csrow, cscol, cerow, cecol
+    local mode = vim.fn.mode()
+    if mode == "v" or mode == "V" or mode == "" then
+        _, csrow, cscol, _ = unpack(vim.fn.getpos("."))
+        _, cerow, cecol, _ = unpack(vim.fn.getpos("v"))
+        if mode == "V" then
+            cscol, cecol = 0, 999
+        end
+    else
+        return ""
+    end
+    if cerow < csrow then csrow, cerow = cerow, csrow end
+    if cecol < cscol then cscol, cecol = cecol, cscol end
+    local lines = vim.fn.getline(csrow, cerow)
+    local n = #lines
+    if n <= 0 then return "" end
+    lines[n] = string.sub(lines[n], 1, cecol)
+    lines[1] = string.sub(lines[1], cscol)
+    return table.concat(lines, "\n"), {
+        start   = { line = csrow, char = cscol },
+        ["end"] = { line = cerow, char = cecol },
+    }
+end
+
 function M.setup(opts)
     options = vim.tbl_deep_extend("force", defaults, opts or {})
 
     vim.api.nvim_create_user_command("GeorgeOpen", function(opts)
-        local lines = vim.api.nvim_buf_get_lines(0, opts.line1 - 1, opts.line2, false)
-        local text = table.concat(lines, "\n")
+        local text = get_visual_selection()
         open_george(text)
     end, {range=true})
 
@@ -34,8 +60,7 @@ function M.setup(opts)
         local language = options.languages[filetype]
         local tempname = vim.fn.tempname()
         local tempfile = tempname .. language.extension
-        local lines = vim.api.nvim_buf_get_lines(0, opts.line1 - 1, opts.line2, false)
-        local text = table.concat(lines, "\n")
+        local text = get_visual_selection()
         text = replace_george(language.template, text)
         vim.fn.writefile(vim.fn.split(text, "\n"), tempfile)
         vim.cmd("!" .. string.format(language.command, tempfile, tempname, tempname))
@@ -71,11 +96,6 @@ function open_george(text)
         end,
         group = group,
     })
-end
-
-function M.select()
-    local text = get_visual_selection()
-    open_george(text)
 end
 
 return M
