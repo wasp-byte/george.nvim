@@ -6,19 +6,56 @@ local defaults = {
             extension = ".rs",
             template = 'fn main() {\n\tgeorge\n\tprintln!("Hello World!");\n}',
             command = "rustc %s -o %s && %s"
-        }
+        },
+        c = {
+            extension = ".c",
+            template = '#include <stdio.h>\n\nint main() {\n\tgeorge\n\tprintf("Hello World!\n");\n\treturn 0;\n}',
+            command = "cc %s -o %s && %s"
+        },
+        javascript = {
+            extension = ".js",
+            template = 'george\nconsole.log("Hello World!");',
+            command = "node %s -o %s && %s"
+        },
+        python = {
+            extension = ".py",
+            template = 'george\nprint("Hello World!")',
+            command = "python3 %s"
+        },
+        shell = {
+            extension = ".sh",
+            template = 'george\necho "Hello World!"',
+            command = "sh %s"
+        },
+        bash = {
+            extension = ".sh",
+            template = 'george\necho "Hello World!"',
+            command = "bash %s"
+        },
+        java = {
+            extension = ".java",
+            template = 'class George {\n\tpublic static void main(String[] args){\n\t\tgeorge\n\t\tSystem.out.println("Hello World!");\n\t}\n}',
+            command = "javac %s -o %s && java %s"
+        },
+        chashtag = {
+            extension = ".cs",
+            template = 'public class George {\n\tpublic static void Main(string[] args){\n\t\tgeorge\n\t\tSystem.Console.println("Hello World!");\n\t}\n}',
+            command = "csc %s"
+        },
+        cpp = {
+            extension = ".cpp",
+            template = '#include <iostream>\n\nint main(){\n\tgeorge\n\tstd::cout << "Hello World!" << std::endl;\n\treturn 0;\n}',
+            command = "g++ %s -o %s && %s"
+        },
+        lua = {
+            extension = ".lua",
+            template = 'george\nprint("Hello World")',
+            command = "lua %s"
+        },
     }
 }
 
-local options = {
-    languages = {
-        rust = {
-            extension = "",
-            template = "",
-            command = "",
-        }
-    }
-}
+local options = {}
 
 -- taken from https://github.com/ibhagwan/fzf-lua/blob/main/lua/fzf-lua/utils.lua
 -- MIT license
