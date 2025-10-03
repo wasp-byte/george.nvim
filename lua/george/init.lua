@@ -92,7 +92,7 @@ function M.setup(opts)
         open_george(text)
     end, {range=true})
 
-    vim.api.nvim_create_user_command("GeorgeCompile", function(opts)
+    vim.api.nvim_create_user_command("GeorgeRun", function(opts)
         local filetype = vim.bo.filetype
         local language = options.languages[filetype]
         local tempname = vim.fn.tempname()
